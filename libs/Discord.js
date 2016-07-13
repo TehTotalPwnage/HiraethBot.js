@@ -1,9 +1,15 @@
-const config = require('./Config');
 const Discord = require("discord.js");
-const PlugAPI = require("plugapi");
+const fs = require('fs');
+const HiraethBot = require('./HiraethBot');
 const Reddit = require('./Reddit');
 
-var DiscordBot = new Discord.Client();
+var DiscordBot = new Discord.Client({
+	autoReconnect: true
+});
+DiscordBot.loginWithToken(HiraethBot.config.discord.token);
+module.exports.Bot = DiscordBot;
+
+const Plug = require("./Plug");
 
 const argsFalse = [ "!ping" ];
 const argsTrue = [ "!duel", "!emojipasta" ];
@@ -26,14 +32,13 @@ function duelCommence(winner, loser, message) {
 			DiscordBot.unmuteMember(loser, message.server);
 			DiscordBot.undeafenMember(loser, message.server);
 			DiscordBot.sendMessage(message.channel, "Now " + loser + 
-				"can reflect on how much better " + winner + " is at duels.").then(postMessage);
+				" can reflect on how much better " + winner + " is at duels.").then(postMessage);
 		}, 60000);
 	}, 5000);
 }
 
 DiscordBot.on("message", function (message) {
 	if (message.content.startsWith("!")) {
-		// I would use message.split here but split is stupid in JS. Time for many useless lines.
 		var args = message.content.indexOf(" ");
 		var param, value;
 		if (args === -1) {
@@ -55,6 +60,8 @@ DiscordBot.on("message", function (message) {
 				} else {
 					DiscordBot.reply(message, "You are not the user that got challenged!").then(postMessage);
 				}
+			} else if (param === "!dab") {
+				DiscordBot.sendMessage(message.channel, {file:{file: __dirname + "/../assets/images/60_21i.gif" }});
 			} else if (param === "!duel") {
 				request = true;
 				challenged = message.mentions[0];
@@ -82,7 +89,7 @@ DiscordBot.on("message", function (message) {
 						DiscordBot.reply(message, "Duel request cancelled due to timeout.").then(postMessage);
 						clearInterval(interval);
 					}
-				}, 10000);
+				}, 20000);
 			} else if (param === "!emojipasta") {
 				Reddit.getEmojipasta(value, result => DiscordBot.sendMessage(message.channel, result));
 			} else if (param === "!fiftyfifty") {
@@ -96,9 +103,7 @@ DiscordBot.on("message", function (message) {
 			}
 		}
 		DiscordBot.deleteMessage(message, { wait:5000 });
+	} else if (message.author !== DiscordBot.user && message.channel === DiscordBot.channels.get("id", 183693578034216960)) {
+		Plug.Bot.sendChat("[Discord] " + message.author.name + ": " + message.content);
 	}
 });
-
-DiscordBot.loginWithToken(config.discord.token).then(module.exports.DiscordBot = DiscordBot);
-
-module.exports.Bot = DiscordBot;
