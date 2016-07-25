@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const fs = require('fs');
+const path = require('path');
 const HiraethBot = require('./HiraethBot');
 const Reddit = require('./Reddit');
 
@@ -36,6 +37,10 @@ function duelCommence(winner, loser, message) {
 		}, 60000);
 	}, 5000);
 }
+
+DiscordBot.on("ready", function () {
+	DiscordBot.joinVoiceChannel("145384605833232385");
+});
 
 DiscordBot.on("message", function (message) {
 	if (message.content.startsWith("!")) {
@@ -98,6 +103,10 @@ DiscordBot.on("message", function (message) {
 				DiscordBot.reply(message, "Pong!").then(postMessage);
 			} else if (param === "!polandball") {
 				Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, result));
+			} else if (param === "!time") {
+				DiscordBot.voiceConnection.playFile('/home/tehtotalpwnage/git/HiraethBot.js/assets/audio/time.mp3', {volume: 0.25});
+			} else if (param === "!weather") {
+				DiscordBot.voiceConnection.playFile('/home/tehtotalpwnage/git/HiraethBot.js/assets/audio/weather.mp3', {volume: 0.25});
 			} else {
 				DiscordBot.reply(message, "Unrecognized command. Run !help for a list of commands.").then(postMessage);
 			}
