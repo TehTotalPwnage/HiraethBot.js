@@ -28,7 +28,7 @@ var getFiftyfifty = function(callback) {
 		if (!submission.url) {
 			callback("An error occured. Try again?");
 		} else {
-			callback(submission.title + ": [" + submission.url + "]");
+			callback("**" + submission.title + ":** [" + submission.url + "]");
 		}
 	});
 };

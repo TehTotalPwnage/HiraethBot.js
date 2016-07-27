@@ -21,7 +21,7 @@ PlugBot.on('advance', function(media) {
 	}
 });
 PlugBot.on('chat', function(data) {
-	if (data.message.startsWith("!")) {
+	if (data.message.startsWith("!") && PlugBot.getSelf().role === 3) {
 		var args = data.message.indexOf(" ");
 		var param, value;
 		if (args === -1) {
@@ -44,7 +44,7 @@ PlugBot.on('chat', function(data) {
 			}
 		}
 		PlugBot.moderateDeleteChat(data.id);
-	} else if (data.raw.un !== "Hiraeth Music Bot") {
-		Discord.Bot.sendMessage(Discord.Bot.channels.get("id", 183693578034216960), "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
+	} else if (data.raw.un !== "Hiraeth Music Bot" && PlugBot.getSelf().role === 3) {
+		Discord.Bot.sendMessage("183693578034216960", "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
 	}
 });
