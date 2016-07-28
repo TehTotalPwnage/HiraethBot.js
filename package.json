@@ -3,6 +3,7 @@
   "version": "2016.07.03",
   "dependencies": {
     "discord.js": "^8.0.0",
+    "githubhook": "^1.0.0",
     "plugapi": "^4.0.0",
     "snoowrap": "^1.0.0"
   },

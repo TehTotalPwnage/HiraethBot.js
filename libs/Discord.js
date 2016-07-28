@@ -107,6 +107,8 @@ DiscordBot.on("message", function (message) {
 				DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!join]** Joined Plug.dj room: " + value);
 			} else if (param === "!ping") {
 				DiscordBot.reply(message, "Pong!").then(postMessage);
+			} else if (param === "!poi") {
+				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25});
 			} else if (param === "!polandball") {
 				Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!polandball]** " + result));
 			} else if (param === "!shutdown") {
