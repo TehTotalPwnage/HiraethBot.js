@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const fs = require('fs');
-const path = require('path');
 const HiraethBot = require('./HiraethBot');
 const Reddit = require('./Reddit');
 
@@ -40,9 +39,10 @@ function duelCommence(winner, loser, message) {
 }
 
 DiscordBot.on("ready", function () {
-	DiscordBot.joinVoiceChannel("145384605833232385")
-		.then(connection => connection.playFile('/home/tehtotalpwnage/git/HiraethBot.js/assets/audio/poi.mp3', {volume: 0.25}));
-	DiscordBot.sendMessage("145384605833232384", "**Now poi-ing!**");
+	DiscordBot.joinVoiceChannel(HiraethBot.config.discord.voicechannel)
+		.then(connection => connection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25}))
+		.catch(console.log);
+	DiscordBot.sendMessage(HiraethBot.config.discord.relaychannel.toString(), "**Now poi-ing!**");
 });
 
 DiscordBot.on("message", function (message) {
@@ -124,15 +124,15 @@ DiscordBot.on("message", function (message) {
 					}, 5000);
 				}
 			} else if (param === "!time") {
-				DiscordBot.voiceConnection.playFile('/home/tehtotalpwnage/git/HiraethBot.js/assets/audio/time.mp3', {volume: 0.25});
+				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/time.mp3', {volume: 0.25});
 			} else if (param === "!weather") {
-				DiscordBot.voiceConnection.playFile('/home/tehtotalpwnage/git/HiraethBot.js/assets/audio/weather.mp3', {volume: 0.25});
+				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/weather.mp3', {volume: 0.25});
 			} else {
 				DiscordBot.reply(message, "Unrecognized command. Run !help for a list of commands.").then(postMessage);
 			}
 		}
 		DiscordBot.deleteMessage(message, { wait:5000 });
-	} else if (Plug.Bot.getSelf().role === 3 && message.author !== DiscordBot.user && message.channel === DiscordBot.channels.get("id", 183693578034216960)) {
+	} else if (Plug.Bot.getSelf().role === 3 && message.author !== DiscordBot.user && message.channel === DiscordBot.channels.get("id", HiraethBot.config.discord.relaychannel)) {
 		Plug.Bot.sendChat("[Discord] " + message.author.name + ": " + message.content);
 	}
 });

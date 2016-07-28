@@ -7,13 +7,18 @@
 var config = {};
 
 config.discord = {};
-config.reddit = {};
 config.plug = {};
+config.reddit = {};
 
 config.discord.token = null;
 
+config.discord.relaychannel = null;
+config.discord.voicechannel = null;
+
 config.plug.email = null;
 config.plug.password = null;
+
+config.plug.mainroom = null;
 
 config.reddit.user_agent = null;
 config.reddit.client_id = null;

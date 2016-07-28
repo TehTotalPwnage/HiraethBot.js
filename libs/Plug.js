@@ -5,7 +5,7 @@ var PlugBot = new PlugAPI({
 	email: HiraethBot.config.plug.email,
 	password: HiraethBot.config.plug.password
 });
-PlugBot.connect('tehtotalpwnage');
+PlugBot.connect(HiraethBot.config.plug.mainroom);
 module.exports.Bot = PlugBot;
 
 const Discord = require('./Discord');
@@ -45,6 +45,6 @@ PlugBot.on('chat', function(data) {
 		}
 		PlugBot.moderateDeleteChat(data.id);
 	} else if (data.raw.un !== "Hiraeth Music Bot" && PlugBot.getSelf().role === 3) {
-		Discord.Bot.sendMessage("183693578034216960", "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
+		Discord.Bot.sendMessage(HiraethBot.config.discord.relaychannel.toString(), "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
 	}
 });
