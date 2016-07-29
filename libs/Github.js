@@ -1,11 +1,14 @@
 const githubhook = require('githubhook');
 
 const Config = require('./Config');
-const HiraethBot = require('./HiraethBot');
 
 var github = githubhook();
 
 github.listen();
+
+module.exports = github;
+
+const HiraethBot = require('./HiraethBot');
 
 github.on('push', function (repo, ref, data) {
 	HiraethBot.Discord.sendMessage(Config.discord.announcementchannel.toString(), "**" + data.head_commit.author.name + " (" + data.head_commit.author.username +

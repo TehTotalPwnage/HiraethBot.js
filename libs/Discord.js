@@ -1,16 +1,17 @@
 const Discord = require("discord.js");
 
 const Config = require('./Config');
-const HiraethBot = require('./HiraethBot');
 
 var DiscordBot = new Discord.Client({
 	autoReconnect: true
 });
-DiscordBot.loginWithToken(Config.discord.token);
+DiscordBot.loginWithToken(Config.discord.token).then(token => console.log("Logged into Discord with token : " + token));
 module.exports = DiscordBot;
 
-const argsFalse = [ "!ping" ];
-const argsTrue = [ "!duel", "!emojipasta", "!join" ];
+const HiraethBot = require('./HiraethBot');
+
+const argsFalse = [ "!ping", "!shutdown" ];
+const argsTrue = [ "!duel", "!emojipasta", "!join", "!play" ];
 var challenged, interval;
 var duel = false;
 var request = false;
@@ -27,23 +28,28 @@ function duelCommence(winner, loser, message) {
 		DiscordBot.sendMessage(message.channel, loser + ", you were talking too much anyway.").then(postMessage);
 		DiscordBot.muteMember(loser, message.server);
 		DiscordBot.deafenMember(loser, message.server);
+		console.log("[DUEL] Muted " + loser.name);
 		setTimeout(function () {
 			DiscordBot.unmuteMember(loser, message.server);
 			DiscordBot.undeafenMember(loser, message.server);
 			DiscordBot.sendMessage(message.channel, "Now " + loser + 
 				" can reflect on how much better " + winner + " is at duels.").then(postMessage);
+			console.log("[DUEL] Unmuted " + loser.name);
 		}, 60000);
 	}, 5000);
 }
 
 DiscordBot.on("ready", function () {
 	DiscordBot.joinVoiceChannel(Config.discord.voicechannel)
-		.then(connection => connection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25}))
-		.catch(console.log);
+		.then(connection => {
+			connection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25});
+			console.log("Connected to voice channel " + connection.voiceChannel.name);
+		}).catch(console.log);
 	DiscordBot.sendMessage(Config.discord.relaychannel.toString(), "**Now poi-ing!**");
 });
 
 DiscordBot.on("message", function (message) {
+	console.log("[CHAT]	[DISCORD] [" + message.author.name + "]: " + message.content);
 	if (message.content.startsWith("!")) {
 		var args = message.content.indexOf(" ");
 		var param, value;
@@ -105,8 +111,8 @@ DiscordBot.on("message", function (message) {
 				DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!join]** Joined Plug.dj room: " + value);
 			} else if (param === "!ping") {
 				DiscordBot.reply(message, "Pong!").then(postMessage);
-			} else if (param === "!poi") {
-				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25});
+			} else if (param === "!play") {
+				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/' + value + '.mp3', {volume: 0.25});
 			} else if (param === "!polandball") {
 				HiraethBot.Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!polandball]** " + result));
 			} else if (param === "!shutdown") {
@@ -117,16 +123,8 @@ DiscordBot.on("message", function (message) {
 						shutdown = false;
 					}, 10000);
 				} else {
-					HiraethBot.Plug.close();
-					DiscordBot.destroy();
-					setTimeout(function() {
-						process.exit();
-					}, 5000);
+					HiraethBot.shutdown();
 				}
-			} else if (param === "!time") {
-				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/time.mp3', {volume: 0.25});
-			} else if (param === "!weather") {
-				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/weather.mp3', {volume: 0.25});
 			} else {
 				DiscordBot.reply(message, "Unrecognized command. Run !help for a list of commands.").then(postMessage);
 			}
@@ -134,5 +132,6 @@ DiscordBot.on("message", function (message) {
 		DiscordBot.deleteMessage(message, { wait:5000 });
 	} else if (HiraethBot.Plug.getSelf().role === 3 && message.author !== DiscordBot.user && message.channel === DiscordBot.channels.get("id", Config.discord.relaychannel)) {
 		HiraethBot.Plug.sendChat("[Discord] " + message.author.name + ": " + message.content);
+		console.log("[RELAY] [Plug.Dj]: [Discord] " + message.author.name + ": " + message.content);
 	}
 });
