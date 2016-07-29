@@ -1,14 +1,15 @@
 /*jshint esversion: 6 */
-
-const HiraethBot = require('./HiraethBot');
 const Snoowrap = require('snoowrap');
 
+const Config = require('./Config');
+const HiraethBot = require('./HiraethBot');
+
 var RedditBot = new Snoowrap({
-	user_agent: HiraethBot.config.reddit.user_agent,
-	client_id: HiraethBot.config.reddit.client_id,
-	client_secret: HiraethBot.config.reddit.client_secret,
-	username: HiraethBot.config.reddit.username,
-	password: HiraethBot.config.reddit.password
+	user_agent: Config.reddit.user_agent,
+	client_id: Config.reddit.client_id,
+	client_secret: Config.reddit.client_secret,
+	username: Config.reddit.username,
+	password: Config.reddit.password
 });
 
 var getEmojipasta = function(query, callback) {

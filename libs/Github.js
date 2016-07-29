@@ -1,10 +1,14 @@
-const githubhook =require('githubhook');
+const githubhook = require('githubhook');
+
+const Config = require('./Config');
+const HiraethBot = require('./HiraethBot');
+
 var github = githubhook();
 
 github.listen();
 
 github.on('push', function (repo, ref, data) {
-	console.log(data.commits.author.name + "(" + data.commits.author.username +
-		") pushed a new commit to " + data.repository.fullname + " (" + data.commits.message +
-		"): " + data.commits.url);
+	HiraethBot.Discord.sendMessage(Config.discord.announcementchannel.toString(), "**" + data.head_commit.author.name + " (" + data.head_commit.author.username +
+		") pushed a new commit to " + data.repository.full_name + " (" + data.head_commit.message +
+		"):** " + data.head_commit.url);
 });

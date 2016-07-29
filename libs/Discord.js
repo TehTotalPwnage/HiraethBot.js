@@ -1,15 +1,13 @@
 const Discord = require("discord.js");
-const fs = require('fs');
+
+const Config = require('./Config');
 const HiraethBot = require('./HiraethBot');
-const Reddit = require('./Reddit');
 
 var DiscordBot = new Discord.Client({
 	autoReconnect: true
 });
-DiscordBot.loginWithToken(HiraethBot.config.discord.token);
-module.exports.Bot = DiscordBot;
-
-const Plug = require("./Plug");
+DiscordBot.loginWithToken(Config.discord.token);
+module.exports = DiscordBot;
 
 const argsFalse = [ "!ping" ];
 const argsTrue = [ "!duel", "!emojipasta", "!join" ];
@@ -39,10 +37,10 @@ function duelCommence(winner, loser, message) {
 }
 
 DiscordBot.on("ready", function () {
-	DiscordBot.joinVoiceChannel(HiraethBot.config.discord.voicechannel)
+	DiscordBot.joinVoiceChannel(Config.discord.voicechannel)
 		.then(connection => connection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25}))
 		.catch(console.log);
-	DiscordBot.sendMessage(HiraethBot.config.discord.relaychannel.toString(), "**Now poi-ing!**");
+	DiscordBot.sendMessage(Config.discord.relaychannel.toString(), "**Now poi-ing!**");
 });
 
 DiscordBot.on("message", function (message) {
@@ -99,18 +97,18 @@ DiscordBot.on("message", function (message) {
 					}
 				}, 20000);
 			} else if (param === "!emojipasta") {
-				Reddit.getEmojipasta(value, result => DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!emojipasta]** " + result));
+				HiraethBot.Reddit.getEmojipasta(value, result => DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!emojipasta]** " + result));
 			} else if (param === "!fiftyfifty") {
-				Reddit.getFiftyfifty(result => DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!fiftyfifty]** " + result));
+				HiraethBot.Reddit.getFiftyfifty(result => DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!fiftyfifty]** " + result));
 			} else if (param === "!join") {
-				Plug.Bot.changeRoom(value);
+				HiraethBot.Plug.Bot.changeRoom(value);
 				DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!join]** Joined Plug.dj room: " + value);
 			} else if (param === "!ping") {
 				DiscordBot.reply(message, "Pong!").then(postMessage);
 			} else if (param === "!poi") {
 				DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25});
 			} else if (param === "!polandball") {
-				Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!polandball]** " + result));
+				HiraethBot.Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!polandball]** " + result));
 			} else if (param === "!shutdown") {
 				if (shutdown === false) {
 					shutdown = true;
@@ -119,7 +117,7 @@ DiscordBot.on("message", function (message) {
 						shutdown = false;
 					}, 10000);
 				} else {
-					Plug.Bot.close();
+					HiraethBot.Plug.close();
 					DiscordBot.destroy();
 					setTimeout(function() {
 						process.exit();
@@ -134,7 +132,7 @@ DiscordBot.on("message", function (message) {
 			}
 		}
 		DiscordBot.deleteMessage(message, { wait:5000 });
-	} else if (Plug.Bot.getSelf().role === 3 && message.author !== DiscordBot.user && message.channel === DiscordBot.channels.get("id", HiraethBot.config.discord.relaychannel)) {
-		Plug.Bot.sendChat("[Discord] " + message.author.name + ": " + message.content);
+	} else if (HiraethBot.Plug.getSelf().role === 3 && message.author !== DiscordBot.user && message.channel === DiscordBot.channels.get("id", Config.discord.relaychannel)) {
+		HiraethBot.Plug.sendChat("[Discord] " + message.author.name + ": " + message.content);
 	}
 });

@@ -1,23 +1,22 @@
+const Config = require('./Config');
 const HiraethBot = require('./HiraethBot');
 const PlugAPI = require('plugapi');
 
 var PlugBot = new PlugAPI({
-	email: HiraethBot.config.plug.email,
-	password: HiraethBot.config.plug.password
+	email: Config.plug.email,
+	password: Config.plug.password
 });
-PlugBot.connect(HiraethBot.config.plug.mainroom);
-module.exports.Bot = PlugBot;
-
-const Discord = require('./Discord');
+PlugBot.connect(Config.plug.mainroom);
+module.exports = PlugBot;
 
 var argsTrue = [];
 var argsFalse = [ "!woot" ];
 
 PlugBot.on('advance', function(media) {
 	if (media.media) {
-		Discord.Bot.setPlayingGame(media.media.author + " - " + media.media.title);
+		HiraethBot.Discord.setPlayingGame(media.media.author + " - " + media.media.title);
 	} else {
-		Discord.Bot.setPlayingGame(null);
+		HiraethBot.Discord.setPlayingGame(null);
 	}
 });
 PlugBot.on('chat', function(data) {
@@ -45,6 +44,6 @@ PlugBot.on('chat', function(data) {
 		}
 		PlugBot.moderateDeleteChat(data.id);
 	} else if (data.raw.un !== "Hiraeth Music Bot" && PlugBot.getSelf().role === 3) {
-		Discord.Bot.sendMessage(HiraethBot.config.discord.relaychannel.toString(), "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
+		HiraethBot.Discord.sendMessage(Config.discord.relaychannel.toString(), "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
 	}
 });
