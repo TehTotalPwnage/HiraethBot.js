@@ -11,7 +11,7 @@ module.exports = github;
 const HiraethBot = require('./HiraethBot');
 
 github.on('push', function (repo, ref, data) {
-	HiraethBot.Discord.sendMessage(Config.discord.announcementchannel.toString(), "**" + data.head_commit.author.name + " (" + data.head_commit.author.username +
+	HiraethBot.Discord.Bot.sendMessage(Config.discord.announcementchannel.toString(), "**" + data.head_commit.author.name + " (" + data.head_commit.author.username +
 		") pushed a new commit to " + data.repository.full_name + " (" + data.head_commit.message +
 		"):** " + data.head_commit.url);
 });

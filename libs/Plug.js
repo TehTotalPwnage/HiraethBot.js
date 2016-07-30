@@ -14,9 +14,9 @@ var argsFalse = [ "!woot" ];
 
 PlugBot.on('advance', function(media) {
 	if (media.media) {
-		HiraethBot.Discord.setPlayingGame(media.media.author + " - " + media.media.title);
+		HiraethBot.Discord.Bot.setPlayingGame(media.media.author + " - " + media.media.title);
 	} else {
-		HiraethBot.Discord.setPlayingGame(null);
+		HiraethBot.Discord.Bot.setPlayingGame(null);
 	}
 });
 PlugBot.on('chat', function(data) {
@@ -44,6 +44,6 @@ PlugBot.on('chat', function(data) {
 		}
 		PlugBot.moderateDeleteChat(data.id);
 	} else if (data.raw.un !== "Hiraeth Music Bot" && PlugBot.getSelf().role === 3) {
-		HiraethBot.Discord.sendMessage(Config.discord.relaychannel.toString(), "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
+		HiraethBot.Discord.Bot.sendMessage(Config.discord.relaychannel.toString(), "**[Plug.DJ] " + data.raw.un + ":** " + data.message);
 	}
 });

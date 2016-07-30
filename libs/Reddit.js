@@ -1,4 +1,3 @@
-/*jshint esversion: 6 */
 const Snoowrap = require('snoowrap');
 
 const Config = require('./Config');

@@ -7,7 +7,7 @@ var shutdown = function() {
 	console.log("Shutting down bot...");
 	Plug.close();
 	console.log("Plug.dj connection closed.");
-	Discord.destroy();
+	Discord.Bot.destroy();
 	console.log("Discord connection closed.");
 	Github.stop();
 	console.log("Github webhook closed.");
