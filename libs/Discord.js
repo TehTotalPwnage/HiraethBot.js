@@ -12,21 +12,17 @@ const postMessage = function(message) {
 module.exports.Bot = DiscordBot;
 module.exports.postMessage = postMessage;
 
-// Load dependents.
 const HiraethBot = require('./HiraethBot');
 
-// Load command files.
 const Duel = require('./commands/Duel');
 const shutdown = require('./commands/Shutdown');
-
-//const argsFalse = [ "!ping", "!shutdown" ];
-//const argsTrue = [ "!duel", "!emojipasta", "!join", "!play" ];
 
 const argsFalse = {
 	"accept": function(message) { Duel.accept(message); },
 	"dab": function(message) { DiscordBot.sendMessage(message.channel, {file:{file: __dirname + "/../assets/images/60_21i.gif" }}); },
 	"fiftyfifty": function(message) { HiraethBot.Reddit.getFiftyfifty(result => DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!fiftyfifty]** " + result)); },
 	"ping": function(message) { DiscordBot.reply(message, "Pong!").then(postMessage); },
+	"rigduel": function(message) { Duel.rigduel(message); },
 	"shutdown": function(message) { shutdown(message); }
 };
 
