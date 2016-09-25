@@ -9,7 +9,9 @@ DiscordBot.loginWithToken(Config.discord.token).then(token => console.log("Logge
 const postMessage = function(message) {
 	DiscordBot.deleteMessage(message, { wait:10000 });
 };
+var botStatus = null;
 module.exports.Bot = DiscordBot;
+module.exports.botStatus = botStatus;
 module.exports.postMessage = postMessage;
 
 const HiraethBot = require('./HiraethBot');
@@ -33,7 +35,15 @@ const argsTrue = {
 		HiraethBot.Plug.changeRoom(value);
 		DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!join]** Joined Plug.dj room: " + value); },
 	"play": function(message, value) { DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/' + value + '.mp3', {volume: 0.25}); },
-	"polandball": function(message, value) { HiraethBot.Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!polandball]** " + result)); }
+	"polandball": function(message, value) { HiraethBot.Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!polandball]** " + result)); },
+	"setgame": function(message, value) {
+		DiscordBot.setPlayingGame(value);
+		DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!setgame]** Set game status to: " + value);
+		botStatus = value;
+		module.exports.botStatus = botStatus; },
+	"setusername": function(message, value) {
+		DiscordBot.setUsername(value);
+		DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!setusername]** Set username to: " + value); }
 };
 
 DiscordBot.on("ready", function () {

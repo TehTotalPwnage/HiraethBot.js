@@ -4,6 +4,7 @@
   "dependencies": {
     "discord.js": "^8.0.0",
     "githubhook": "^1.0.0",
+    "lol-js": "^2.0.0",
     "plugapi": "^4.0.0",
     "snoowrap": "^1.0.0"
   },
