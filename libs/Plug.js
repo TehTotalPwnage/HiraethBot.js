@@ -14,9 +14,9 @@ var argsFalse = [ "!woot" ];
 
 PlugBot.on('advance', function(media) {
 	if (media.media) {
-		HiraethBot.Discord.Bot.setPlayingGame(media.media.author + " - " + media.media.title);
+		HiraethBot.Discord.Bot.user.setStatus("online", media.media.author + " - " + media.media.title);
 	} else {
-		HiraethBot.Discord.Bot.setPlayingGame(null);
+		HiraethBot.Discord.Bot.user.setStatus();
 	}
 });
 PlugBot.on('chat', function(data) {
