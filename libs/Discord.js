@@ -13,33 +13,45 @@ const Duel = require('./commands/Duel');
 const shutdown = require('./commands/Shutdown');
 
 const commands = {
+	"accept": (message) => {
+		Duel.accept(message);
+	},
+	"duel": function(message, value) {
+		Duel.duel(message);
+	},
+	"emojipasta": function(message, value) {
+		HiraethBot.Reddit.getEmojipasta(value, result => message.channel.sendMessage("**[" + message.author + "] [!emojipasta]** " + result));
+	},
+	"fiftyfifty": function(message) {
+		HiraethBot.Reddit.getFiftyfifty(result => message.channel.sendMessage("**[" + message.author + "] [!fiftyfifty]** " + result));
+	},
+	"join": function(message, value) {
+		HiraethBot.Plug.changeRoom(value);
+		message.channel.sendMessage("**[" + message.author + "] [!join]** Joined Plug.dj room: " + value);
+	},
+	"ping": function(message) {
+		DiscordBot.reply(message, "Pong!").then(message.delete(10000));
+	},
+	"play": function(message, value) {
+		DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/' + value + '.mp3', {volume: 0.25});
+	},
+	"polandball": function(message, value) {
+		HiraethBot.Reddit.getPolandball(value, result=> message.channel.sendMessage("**[" + message.author + "] [!polandball]** " + result));
+	},
 	"prune": (message) => {
 		message.channel.fetchMessages().then(messages => {
 			messages.deleteAll()
 				.then(messages => console.log("Pruned " + messages.length + " messages from channel " + message.channel.name))
 				.catch(error => console.log("Error on pruning messages from " + message.channel.name + ": " + error));
 		});
+	},
+	"rigduel": function(message) {
+		Duel.rigduel(message);
+	},
+	"shutdown": function(message) {
+		shutdown(message);
 	}
 };
-
-// const argsFalse = {
-// 	"accept": function(message) { Duel.accept(message); },
-// 	"dab": function(message) { DiscordBot.sendMessage(message.channel, {file:{file: __dirname + "/../assets/images/60_21i.gif" }}); },
-// 	"fiftyfifty": function(message) { HiraethBot.Reddit.getFiftyfifty(result => DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!fiftyfifty]** " + result)); },
-// 	"ping": function(message) { DiscordBot.reply(message, "Pong!").then(message.delete(10000)); },
-// 	"rigduel": function(message) { Duel.rigduel(message); },
-// 	"shutdown": function(message) { shutdown(message); }
-// };
-//
-// const argsTrue = {
-// 	"duel": function(message, value) { Duel.duel(message); },
-// 	"emojipasta": function(message, value) { HiraethBot.Reddit.getEmojipasta(value, result => DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!emojipasta]** " + result)); },
-// 	"join": function(message, value) {
-// 		HiraethBot.Plug.changeRoom(value);
-// 		DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!join]** Joined Plug.dj room: " + value); },
-// 	"play": function(message, value) { DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/' + value + '.mp3', {volume: 0.25}); },
-// 	"polandball": function(message, value) { HiraethBot.Reddit.getPolandball(value, result=> DiscordBot.sendMessage(message.channel, "**[" + message.author + "] [!polandball]** " + result)); }
-// };
 
 DiscordBot.on("ready", () => {
 	// DiscordBot.joinVoiceChannel(Config.discord.voicechannel)
