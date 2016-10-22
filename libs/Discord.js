@@ -10,6 +10,7 @@ module.exports.Bot = DiscordBot;
 const HiraethBot = require('./HiraethBot');
 
 const Duel = require('./commands/Duel');
+var player = require(__dirname + '/Player.js');
 const shutdown = require('./commands/Shutdown');
 
 const commands = {
@@ -22,15 +23,15 @@ const commands = {
 	"emojipasta": function(message, value) {
 		HiraethBot.Reddit.getEmojipasta(value, result => message.channel.sendMessage("**[" + message.author + "] [!emojipasta]** " + result));
 	},
-	"fiftyfifty": function(message) {
+	"fiftyfifty": message => {
 		HiraethBot.Reddit.getFiftyfifty(result => message.channel.sendMessage("**[" + message.author + "] [!fiftyfifty]** " + result));
 	},
 	"join": function(message, value) {
 		HiraethBot.Plug.changeRoom(value);
 		message.channel.sendMessage("**[" + message.author + "] [!join]** Joined Plug.dj room: " + value);
 	},
-	"ping": function(message) {
-		DiscordBot.reply(message, "Pong!").then(message.delete(10000));
+	"ping": message => {
+		message.reply("Pong!");
 	},
 	"play": function(message, value) {
 		DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/' + value + '.mp3', {volume: 0.25});
@@ -45,10 +46,13 @@ const commands = {
 				.catch(error => console.log("Error on pruning messages from " + message.channel.name + ": " + error));
 		});
 	},
-	"rigduel": function(message) {
+	"rigduel": message => {
 		Duel.rigduel(message);
 	},
-	"shutdown": function(message) {
+	"setgame": message => {
+		DiscordBot.user.setStatus("online", message.content.substring(9));
+	},
+	"shutdown": message => {
 		shutdown(message);
 	}
 };
@@ -63,18 +67,18 @@ DiscordBot.on("ready", () => {
 	console.log("Now serving " + DiscordBot.guilds.length + " servers.");
 });
 
-DiscordBot.on("message", (message) => {
-	console.log("[CHAT]	[DISCORD] [" + message.author.name + "]: " + message.content);
-	if (message.content.startsWith("!")) {
-		let args = message.content.split(" ");
-		if (args[0].substring(1) in commands) {
-			commands[args[0].substring(1)](message);
-		} else {
-			message.channel.sendMessage("Unrecognized command. Run !help for a list of commands.").then(message.delete(10000));
+DiscordBot.on("message", message => {
+	if (message.author.bot) {
+		return;
+	}
+	if (message.content.startsWith("~")) {
+		if (message.content.split(" ")[0].substring(1) in commands) {
+	        commands[message.content.split(" ")[0].substring(1)](message);
+	    } else if (message.content.split(" ")[0].substring(1) in player.commands) {
+			player.commands[message.content.split(" ")[0].substring(1)](message);
 		}
-		message.delete(5000);
-	} else if (HiraethBot.Plug.getSelf().role === 3 && message.author !== DiscordBot.user && message.channel === DiscordBot.channels.get("id", Config.discord.relaychannel)) {
-		HiraethBot.Plug.sendChat("[Discord] " + message.author.name + ": " + message.content);
-		console.log("[RELAY] [Plug.Dj]: [Discord] " + message.author.name + ": " + message.content);
+	} else if (message.author.id in player.response) {
+		player.response[message.author.id].push(message.content);
+		player.response[message.author.id][0] = true;
 	}
 });
