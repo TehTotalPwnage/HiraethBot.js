@@ -5,7 +5,10 @@
     "discord.js": "^9.0.0",
     "githubhook": "^1.0.0",
     "plugapi": "^4.0.0",
-    "snoowrap": "^1.0.0"
+    "snoowrap": "^1.0.0",
+    "sqlite": "^2.0.0",
+    "youtube-api": "^2.0.0",
+    "youtube-dl": "^1.0.0"
   },
   "repository": {
     "type": "git",

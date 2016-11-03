@@ -48,8 +48,9 @@ class Player extends events.EventEmitter {
 		this.push = (obj, repeat, search) => {
 			return new Promise(fulfill => {
 				let query = search ? "ytsearch:" + obj : obj;
-				youtubedl.getInfo(query, [], (err, info) => {
+				youtubedl.getInfo(query, [], {maxBuffer: Infinity}, (err, info) => {
 					if (err) {
+						console.log(err);
 						this.push(obj, repeat, true).then(fulfill);
 					} else {
 						let title = info.title;
@@ -72,9 +73,9 @@ class Player extends events.EventEmitter {
 		};
 		this.play = (song, search) => {
 			this.playing = true;
-			let video = search ? youtubedl("ytsearch:" + song.query, ['-f bestaudio/best']) : youtubedl(song.query, ['-f bestaudio/best']);
+			let video = search ? youtubedl("ytsearch:" + song.query, ['-f bestaudio/best'], {maxBuffer: Infinity}) : youtubedl(song.query, ['-f bestaudio/best'], {maxBuffer:Infinity});
 			video.on('error', () => {
-				console.log("There was an error loading the long, likely due to a search. Retrying...");
+				console.log("There was an error loading the song, likely due to a search. Retrying...");
 				this.play(song, true);
 			});
 			video.on('info', () => {
@@ -274,13 +275,13 @@ module.exports.commands = commands;
 module.exports.player = player;
 module.exports.response = response;
 
-const main = require(`${__dirname}/Config.js`);
+const main = require(`${__dirname}/Discord.js`);
 youtubeapi.authenticate({
 	type: "key",
 	key: main.youtube_api_key
 });
 
-main.bot.on("voiceStateUpdate", (oldMember, newMember) => {
+main.Bot.on("voiceStateUpdate", (oldMember, newMember) => {
 	if ((oldMember.voiceChannel !== player.voiceChannel && newMember.voiceChannel === player.voiceChannel) ||
 		(oldMember.voiceChannel === player.voiceChannel && newMember.voiceChannel !== player.voiceChannel)) {
 			player.getUsers();

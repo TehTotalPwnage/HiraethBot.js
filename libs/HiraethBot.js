@@ -1,7 +1,7 @@
-const Discord = require('./Discord');
-const Github = require('./Github');
-const Plug = require('./Plug');
-const Reddit = require('./Reddit');
+const Discord = require(`${__dirname}/Discord.js`);
+const Github = require(`${__dirname}/Github.js`);
+const Plug = require(`${__dirname}/Plug.js`);
+const Reddit = require(`${__dirname}/Reddit.js`);
 
 var shutdown = function() {
 	console.log("Shutting down bot...");

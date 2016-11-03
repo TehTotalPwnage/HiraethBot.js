@@ -33,9 +33,9 @@ const commands = {
 	"ping": message => {
 		message.reply("Pong!");
 	},
-	"play": function(message, value) {
-		DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/' + value + '.mp3', {volume: 0.25});
-	},
+	// "play": function(message, value) {
+	// 	DiscordBot.voiceConnection.playFile(__dirname + '/../assets/audio/' + value + '.mp3', {volume: 0.25});
+	// },
 	"polandball": function(message, value) {
 		HiraethBot.Reddit.getPolandball(value, result=> message.channel.sendMessage("**[" + message.author + "] [!polandball]** " + result));
 	},
@@ -58,12 +58,6 @@ const commands = {
 };
 
 DiscordBot.on("ready", () => {
-	// DiscordBot.joinVoiceChannel(Config.discord.voicechannel)
-	// 	.then(connection => {
-	// 		connection.playFile(__dirname + '/../assets/audio/poi.mp3', {volume: 0.25});
-	// 		console.log("Connected to voice channel " + connection.voiceChannel.name);
-	// 	}).catch(console.log);
-	// DiscordBot.sendMessage(Config.discord.relaychannel.toString(), "**Now poi-ing!**");
 	console.log("Now serving " + DiscordBot.guilds.length + " servers.");
 });
 
