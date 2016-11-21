@@ -74,3 +74,6 @@ GitHub.sublime-settings
 Config.js
 
 assets
+
+# This is my private data too.
+data.sqlite3

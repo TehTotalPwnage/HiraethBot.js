@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const sqlite = require("sqlite");
 
 const Config = require('./Config');
 
@@ -57,8 +58,15 @@ const commands = {
 	}
 };
 
+var songPlayer = new player.Player(DiscordBot);
+
 DiscordBot.on("ready", () => {
 	console.log("Now serving " + DiscordBot.guilds.length + " servers.");
+	sqlite.open(`${__dirname}/../data.sqlite3`).then(() => {
+		sqlite.migrate({migrationsPath: __dirname + "/../migrations"}).then(() => {
+			songPlayer.reloadPlaylist();
+		});
+	});
 });
 
 DiscordBot.on("message", message => {
@@ -68,11 +76,11 @@ DiscordBot.on("message", message => {
 	if (message.content.startsWith("~")) {
 		if (message.content.split(" ")[0].substring(1) in commands) {
 	        commands[message.content.split(" ")[0].substring(1)](message);
-	    } else if (message.content.split(" ")[0].substring(1) in player.commands) {
-			player.commands[message.content.split(" ")[0].substring(1)](message);
+	    } else if (message.content.split(" ")[0].substring(1) in songPlayer.commands.commands) {
+			songPlayer.commands.commands[message.content.split(" ")[0].substring(1)].execute(message);
 		}
-	} else if (message.author.id in player.response) {
-		player.response[message.author.id].push(message.content);
-		player.response[message.author.id][0] = true;
+	} else if (message.author.id in songPlayer.response) {
+		songPlayer.response[message.author.id].push(message.content);
+		songPlayer.response[message.author.id][0] = true;
 	}
 });
